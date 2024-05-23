@@ -9,5 +9,7 @@ public interface CustomerService {
 
     List<Customer> getCustomers();
 
-    void registerUser(CustomerDto customerDto);
+    void registerCustomer(CustomerDto customerDto);
+
+    void updateCustomer(CustomerDto customerDto, Long id);
 }

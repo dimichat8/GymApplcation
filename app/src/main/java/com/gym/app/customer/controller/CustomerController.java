@@ -3,6 +3,7 @@ package com.gym.app.customer.controller;
 import com.gym.app.customer.entity.Customer;
 import com.gym.app.customer.service.CustomerService;
 import com.gym.app.dto.CustomerDto;
+import com.gym.app.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,13 @@ public class CustomerController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody CustomerDto customerDto) {
-        customerService.registerUser(customerDto);
+        customerService.registerCustomer(customerDto);
         return ResponseEntity.ok("Customer '" + customerDto.getSurname() + "' registered successfully!");
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateUser(@RequestBody CustomerDto customerDto, @PathVariable Long id) {
+        customerService.updateCustomer(customerDto, id);
+        return ResponseEntity.ok("Customer updated successfully!");
     }
 }

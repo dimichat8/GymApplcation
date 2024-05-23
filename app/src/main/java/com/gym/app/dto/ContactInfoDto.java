@@ -1,5 +1,7 @@
 package com.gym.app.dto;
 
+import com.gym.app.customer.entity.Customer;
+import com.gym.app.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ContactInfoDto {
 
+    private Long id;
     private String phone;
     private String email;
     private String mobilePhone;
+    private User user;
+    private Customer customer;
 }

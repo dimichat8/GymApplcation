@@ -12,8 +12,9 @@ public class CustomerDto {
     private Long id;
     private String firstname;
     private String surname;
-    private String gender;
     private Integer age;
-    private Long user_id;
-
+    private String gender;
+    private Boolean isEnabled;
+    private ContactInfoDto contactInfoDto;
+    private Long userId;
 }

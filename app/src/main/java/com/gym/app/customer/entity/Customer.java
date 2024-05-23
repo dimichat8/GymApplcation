@@ -1,5 +1,6 @@
 package com.gym.app.customer.entity;
 
+import com.gym.app.contactInfo.entity.ContactInfo;
 import com.gym.app.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,9 +21,9 @@ public class Customer {
     private String surname;
     private String gender;
     private Integer age;
-
-    //private List<ContactInfoDto> contactInfoDtoList = new ArrayList<>();
-    private boolean isEnabled;
+    private Boolean isEnabled;
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private ContactInfo contactInfo;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
