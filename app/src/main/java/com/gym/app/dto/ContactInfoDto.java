@@ -15,6 +15,6 @@ public class ContactInfoDto {
     private String phone;
     private String email;
     private String mobilePhone;
-    private User user;
-    private Customer customer;
+    private Long userId;
+    private Long customerId;
 }

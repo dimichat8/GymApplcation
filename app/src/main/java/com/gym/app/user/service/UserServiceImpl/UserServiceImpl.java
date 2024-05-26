@@ -3,6 +3,7 @@ package com.gym.app.user.service.UserServiceImpl;
 import com.gym.app.contactInfo.entity.ContactInfo;
 import com.gym.app.contactInfo.repository.ContactInfoRepository;
 import com.gym.app.dto.UserDto;
+import com.gym.app.mapper.Map;
 import com.gym.app.user.entity.User;
 import com.gym.app.user.repository.UserRepository;
 import com.gym.app.user.service.UserService;
@@ -22,13 +23,16 @@ public class UserServiceImpl implements UserService {
     private ContactInfoRepository contactInfoRepository;
 
     @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getUsers() {
+        return userRepository.findAll().stream()
+                .map(Map::convertToUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public Optional<UserDto> getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(Map::convertToUserDto);
     }
 
     @Override
@@ -38,7 +42,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(/*passwordEncoder.encode(*/userDto.getPassword());
         user.setIsLoggedIn(userDto.getIsLoggedIn());
         user.setRole(userDto.getRole());
-        user.setCustomerList(userDto.getCustomerList());
+        //user.setCustomerList(userDto.getCustomerList());
 
         User savedUser = userRepository.save(user);
         ContactInfo contactInfo = new ContactInfo();
@@ -75,7 +79,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            userRepository.deleteById(id);}
+           existingUser.ifPresent(user ->  userRepository.delete(user));
     }
+
 }

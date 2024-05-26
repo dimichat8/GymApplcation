@@ -1,5 +1,7 @@
 package com.gym.app.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gym.app.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

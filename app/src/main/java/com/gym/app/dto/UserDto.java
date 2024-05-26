@@ -20,5 +20,5 @@ public class UserDto {
     private ContactInfoDto contactInfoDto;
     private Boolean isLoggedIn;
     private Role role;
-    private List<Customer> customerList;
+    private List<CustomerDto> customerList;
 }

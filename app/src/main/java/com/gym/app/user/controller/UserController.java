@@ -17,15 +17,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/findUsers")
-    public ResponseEntity<List<User>> getUsers() {
-        List<User> userList = userService.getUsers();
+    @GetMapping("/getUsers")
+    public ResponseEntity<List<UserDto>> getUsers() {
+        List<UserDto> userList = userService.getUsers();
         return ResponseEntity.ok(userList);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
-        Optional<User> user = userService.getUserById(id);
+    @GetMapping("/getUserById/{id}")
+    public ResponseEntity<Optional<UserDto>> getUserById(@PathVariable Long id) {
+        Optional<UserDto> user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
