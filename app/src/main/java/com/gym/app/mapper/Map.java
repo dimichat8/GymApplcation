@@ -6,7 +6,9 @@ import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.dto.ContactInfoDto;
 import com.gym.app.dto.CustomerDto;
 import com.gym.app.dto.UserDto;
+import com.gym.app.dto.WorkoutDto;
 import com.gym.app.user.entity.User;
+import com.gym.app.workout.entity.Workout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -131,6 +133,27 @@ public class Map {
             //contactInfoDto.setCustomerId(userDto.getId());
         }
         return user;
+    }
+
+    public static Workout covertToWorkout(WorkoutDto workoutDto) {
+        if (workoutDto == null) {
+            return null;
+        }
+        Workout workout = new Workout();
+        workout.setId(workoutDto.getId());
+        workout.setName(workoutDto.getName());
+        workout.setType(workoutDto.getType());
+        workout.setDuration(workoutDto.getDuration());
+        return workout;
+    }
+
+    public static WorkoutDto covertToWorkoutDto(Workout workout) {
+        WorkoutDto workoutDto = new WorkoutDto();
+        workoutDto.setId(workout.getId());
+        workoutDto.setName(workout.getName());
+        workoutDto.setType(workout.getType());
+        workoutDto.setDuration(workout.getDuration());
+        return workoutDto;
     }
 
 }

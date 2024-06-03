@@ -18,4 +18,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query("select c from ContactInfo c where c.customer=:customer")
     ContactInfo findContactInfoByCustomer(Optional<Customer> customer);
+
+    @Query("select count(c) from Customer  c where c.isEnabled = true")
+    int countActiveCustomers();
+
+    @Query("select count(c) from Customer  c where c.isEnabled = false")
+    int countDisabledCustomers();
 }

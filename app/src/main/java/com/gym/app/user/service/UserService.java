@@ -1,5 +1,6 @@
 package com.gym.app.user.service;
 
+import com.gym.app.dto.AllDto;
 import com.gym.app.dto.UserDto;
 import com.gym.app.user.entity.User;
 
@@ -16,4 +17,6 @@ public interface UserService {
     void updateUser(UserDto userDto, Long id);
 
     void deleteUser(Long id);
+
+    AllDto all();
 }

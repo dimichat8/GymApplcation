@@ -2,11 +2,14 @@ package com.gym.app.user.service.UserServiceImpl;
 
 import com.gym.app.contactInfo.entity.ContactInfo;
 import com.gym.app.contactInfo.repository.ContactInfoRepository;
+import com.gym.app.customer.repository.CustomerRepository;
+import com.gym.app.dto.AllDto;
 import com.gym.app.dto.UserDto;
 import com.gym.app.mapper.Map;
 import com.gym.app.user.entity.User;
 import com.gym.app.user.repository.UserRepository;
 import com.gym.app.user.service.UserService;
+import com.gym.app.workout.repository.WorkoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,10 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private ContactInfoRepository contactInfoRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private WorkoutRepository workoutRepository;
 
     @Override
     public List<UserDto> getUsers() {
@@ -80,6 +87,21 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         Optional<User> existingUser = userRepository.findById(id);
            existingUser.ifPresent(user ->  userRepository.delete(user));
+    }
+
+    @Override
+    public AllDto all() {
+        AllDto allDto = new AllDto();
+       int countUsers = userRepository.countUsers();
+       int countActiveCustomers = customerRepository.countActiveCustomers();
+       int countDisabledCustomers = customerRepository.countDisabledCustomers();
+       int countWorkouts = workoutRepository.countWorkouts();
+       allDto.setUsers(countUsers);
+       allDto.setActiveCustomers(countActiveCustomers);
+       allDto.setDisabledCustomers(countDisabledCustomers);
+       allDto.setWorkouts(countWorkouts);
+        System.out.println(allDto);
+       return allDto;
     }
 
 }
