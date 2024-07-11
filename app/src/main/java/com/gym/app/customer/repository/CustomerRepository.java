@@ -5,6 +5,7 @@ import com.gym.app.customer.entity.Customer;
 import com.gym.app.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -24,4 +25,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query("select count(c) from Customer  c where c.isEnabled = false")
     int countDisabledCustomers();
+
+    @Query("select c from Customer c where c.firstname=:firstname and c.surname=:surname")
+    Optional<Customer> findCustomerByFirstnameAndSurname(@Param("firstname") String firstname, @Param("surname") String surname);
 }

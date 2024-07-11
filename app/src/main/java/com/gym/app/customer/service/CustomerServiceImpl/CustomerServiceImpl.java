@@ -12,8 +12,6 @@ import com.gym.app.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
@@ -166,5 +164,14 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteCustomer(@PathVariable Long id) {
         Optional<Customer> customerOpt = customerRepository.findById(id);
         customerOpt.ifPresent(customer -> customerRepository.delete(customer));
+    }
+
+    @Override
+    public Optional<Customer> getCustomer(String firstname, String surname) {
+        Optional<Customer> customer = customerRepository.findCustomerByFirstnameAndSurname(firstname, surname);
+        if (customer.isPresent()) {
+            logger.info("Customer name is: " + customer.get().getFirstname() + " " + customer.get().getSurname());
+        }
+        return customerRepository.findCustomerByFirstnameAndSurname(firstname, surname);
     }
 }

@@ -12,6 +12,7 @@ import com.gym.app.workout.entity.Workout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Map {
@@ -144,6 +145,8 @@ public class Map {
         workout.setName(workoutDto.getName());
         workout.setType(workoutDto.getType());
         workout.setDuration(workoutDto.getDuration());
+        workout.setDescription(workoutDto.getDescription());
+        workout.setWeek(workoutDto.getWeek());
         return workout;
     }
 
@@ -153,7 +156,21 @@ public class Map {
         workoutDto.setName(workout.getName());
         workoutDto.setType(workout.getType());
         workoutDto.setDuration(workout.getDuration());
+        workoutDto.setDescription(workout.getDescription());
+        workoutDto.setWeek(workout.getWeek());
         return workoutDto;
+    }
+
+        public static List<Workout> mapToWorkouts(List<WorkoutDto> workoutDtos) {
+            return workoutDtos.stream().map(workoutDto -> {
+                Workout workout = new Workout();
+                workout.setName(workoutDto.getName());
+                workout.setType(workoutDto.getType());
+                workout.setDuration(workoutDto.getDuration());
+                workout.setDescription(workoutDto.getDescription());
+                workout.setWeek(workoutDto.getWeek());
+                return workout;
+            }).collect(Collectors.toList());
     }
 
 }

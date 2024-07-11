@@ -1,5 +1,6 @@
 package com.gym.app.customer.service;
 
+import com.gym.app.customer.entity.Customer;
 import com.gym.app.dto.CustomerDto;
 import com.gym.app.dto.UserDto;
 import com.gym.app.user.entity.User;
@@ -24,4 +25,6 @@ public interface CustomerService {
     void updateCustomer(CustomerDto customerDto, Long id);
 
     void deleteCustomer(@PathVariable Long id);
+
+    Optional<Customer> getCustomer(String firstname, String surname);
 }

@@ -71,4 +71,14 @@ public class CustomerController {
         customerService.deleteCustomer(id);
         return ResponseEntity.ok("Customer deleted successfully!");
     }
+
+    @GetMapping("get/name")
+    public ResponseEntity<String> getCustomerName(@RequestParam String firstname, @RequestParam String surname) {
+        Optional<Customer> customer = customerService.getCustomer(firstname, surname);
+        if (customer.isPresent()) {
+            return ResponseEntity.ok("Customer name is: " + customer.get().getFirstname() + " " + customer.get().getSurname());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

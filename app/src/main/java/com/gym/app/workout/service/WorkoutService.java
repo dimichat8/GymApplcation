@@ -1,7 +1,6 @@
 package com.gym.app.workout.service;
 
 import com.gym.app.dto.WorkoutDto;
-import com.gym.app.dto.WorkoutUserDto;
 import com.gym.app.workout.entity.Workout;
 
 import java.util.List;
