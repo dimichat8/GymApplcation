@@ -1,6 +1,7 @@
 package com.gym.app.workout.service;
 
 import com.gym.app.dto.WorkoutDto;
+import com.gym.app.dto.WorkoutUserDto;
 import com.gym.app.workout.entity.Workout;
 
 import java.util.List;
@@ -10,7 +11,15 @@ public interface WorkoutService {
 
     Workout getWorkoutById(Long id);
 
+    List<WorkoutDto> getWorkoutsByTypeAndWeek(String type, String week, Long customerId);
+
+    void saveWorkoutWithCustomer(List<WorkoutDto> workoutsDto, Long id);
+
     Workout saveWorkout(WorkoutDto workoutDto);
 
     void deleteWorkout(Long id);
+
+    void deleteWorkoutCustomer(Long id);
+
+    List<WorkoutDto> workoutOfCustomer(Long id);
 }

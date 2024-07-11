@@ -26,6 +26,17 @@ public class WorkoutController {
         return workoutService.getWorkoutById(id);
     }
 
+    @GetMapping("/get/by/type/week/{customerId}")
+    public List<WorkoutDto> getWorkoutsByTypeAndWeek(@RequestParam String type, @RequestParam String week, @PathVariable Long customerId) {
+        return workoutService.getWorkoutsByTypeAndWeek(type, week, customerId);
+    }
+
+    @PostMapping("save/customer/{id}")
+    public ResponseEntity<String> saveWorkoutWithCustomer(@RequestBody List<WorkoutDto> workoutsDto, @PathVariable Long id) {
+    workoutService.saveWorkoutWithCustomer(workoutsDto, id);
+    return ResponseEntity.ok("Workout Saved");
+    }
+
     @PostMapping("/add/workout")
     public ResponseEntity<String> createWorkout(@RequestBody WorkoutDto workoutDto) {
         workoutService.saveWorkout(workoutDto);
@@ -45,5 +56,15 @@ public class WorkoutController {
     @DeleteMapping("/delete/{id}")
     public void deleteWorkout(@PathVariable Long id) {
         workoutService.deleteWorkout(id);
+    }
+
+    @DeleteMapping("/delete/customer/{id}")
+    public void deleteWorkoutWithCustomer(@PathVariable Long id) {
+        workoutService.deleteWorkoutCustomer(id);
+    }
+
+    @GetMapping("/get/customer/{id}")
+    public List<WorkoutDto> getWorkoutUserById(@PathVariable Long id) {
+       return workoutService.workoutOfCustomer(id);
     }
 }

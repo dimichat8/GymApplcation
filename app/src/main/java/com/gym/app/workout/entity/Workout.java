@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 
@@ -20,8 +21,11 @@ public class Workout {
     private String name;
     private String type;
     private String duration;
+    private String description;
+    private String week;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
+    @ToString.Exclude
     private Customer customer;
 }

@@ -14,5 +14,7 @@ public class WorkoutDto {
     private String name;
     private String type;
     private String duration;
+    private String description;
+    private String week;
     private Long customerId;
 }
