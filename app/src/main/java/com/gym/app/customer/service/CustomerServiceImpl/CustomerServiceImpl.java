@@ -145,7 +145,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setSurname(customerDto.getSurname());
             customer.setIsEnabled(customerDto.getIsEnabled());
             customer.setAge(customerDto.getAge());
-            customer.setAge(customerDto.getAge());
+            customer.setGender(customerDto.getGender());
 
             ContactInfo contactInfo = customerRepository.findContactInfoByCustomer(existingCustomerOpt);
             if (customerDto.getContactInfoDto() != null && contactInfo != null) {
