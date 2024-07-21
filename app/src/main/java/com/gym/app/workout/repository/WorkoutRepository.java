@@ -24,8 +24,13 @@ public interface WorkoutRepository extends JpaRepository<Workout, Long> {
 
     @Transactional
     @Modifying
-    @Query("delete from Workout w where w.customer =:customer")
-    void deleteWorkoutsByCustomer(@Param("customer") Optional<Customer> customer);
+    @Query("delete from Workout w where w.id = :workoutId and w.customer = :customer")
+    void deleteWorkoutsByCustomer(@Param("workoutId") Long workoutId, @Param("customer") Customer customer);
+
+    @Transactional
+    @Modifying
+    @Query("delete from Workout w where w.customer = :customer and w.week = :week")
+    void deleteWorkoutsByWeek(String week, @Param("customer") Customer customer);
 
     @Query("select w from Workout w where w.type =:type and w.week =:week and w.customer = :customer")
     List<Workout> findWorkoutByTypeAndWeek(String type, String week, Optional<Customer> customer);

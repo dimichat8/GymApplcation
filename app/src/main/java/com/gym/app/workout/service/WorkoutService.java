@@ -18,7 +18,9 @@ public interface WorkoutService {
 
     void deleteWorkout(Long id);
 
-    void deleteWorkoutCustomer(Long id);
+    void deleteWorkoutCustomer(Long workoutId, Long customerId);
+
+    void deleteWorkoutByWeek(String week, Long customerId);
 
     List<WorkoutDto> workoutOfCustomer(Long id);
 }

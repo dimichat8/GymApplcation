@@ -80,11 +80,30 @@ public class WorkoutServiceImpl implements WorkoutService {
             workoutRepository.deleteById(id);
         }
 
-        @Override
-        public void deleteWorkoutCustomer(Long id) {
-            Optional<Customer> customer = customerRepository.findById(id);
-            workoutRepository.deleteWorkoutsByCustomer(customer);
+    @Override
+    public void deleteWorkoutCustomer(Long workoutId, Long customerId) {
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        Optional<Workout> workout = workoutRepository.findById(workoutId);
+
+        if (customer.isPresent() && workout.isPresent()) {
+            workoutRepository.deleteWorkoutsByCustomer(workout.get().getId(), customer.get());
+        } else if (workout.isPresent()) {
+            throw new RuntimeException("Customer not found");
+        } else if (customer.isPresent()) {
+            throw new RuntimeException("Workout not found");
+        } else {
+            throw new RuntimeException("Customer and Workout not found");
         }
+    }
+    @Override
+    public void deleteWorkoutByWeek(String week, Long customerId) {
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        if (customer.isPresent()) {
+            workoutRepository.deleteWorkoutsByWeek(week, customer.get());
+        } else {
+            throw new RuntimeException("Customer and Workout not found");
+        }
+    }
 
         @Override
         public List<WorkoutDto> workoutOfCustomer(Long id) {

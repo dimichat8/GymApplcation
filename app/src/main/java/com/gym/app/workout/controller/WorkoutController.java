@@ -4,11 +4,12 @@ import com.gym.app.dto.WorkoutDto;
 import com.gym.app.workout.entity.Workout;
 import com.gym.app.workout.service.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS })
 @RestController
 @RequestMapping("/workout")
 public class WorkoutController {
@@ -58,9 +59,27 @@ public class WorkoutController {
         workoutService.deleteWorkout(id);
     }
 
-    @DeleteMapping("/delete/customer/{id}")
-    public void deleteWorkoutWithCustomer(@PathVariable Long id) {
-        workoutService.deleteWorkoutCustomer(id);
+    @DeleteMapping("/delete/{workoutId}/customer/{customerId}")
+    public ResponseEntity<Void> deleteWorkoutWithCustomer(
+            @PathVariable Long workoutId,
+            @PathVariable Long customerId) {
+
+        try {
+            workoutService.deleteWorkoutCustomer(workoutId, customerId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("delete/by/week/{customerId}")
+    public ResponseEntity<Void> deleteWorkoutByWeek(@RequestParam String week, @PathVariable Long customerId) {
+        workoutService.deleteWorkoutByWeek(week, customerId);
+        try {
+        return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/get/customer/{id}")
