@@ -18,6 +18,7 @@ public class CustomerDto {
     private String gender;
     private Boolean isEnabled;
     private byte[] profilePicture;
+    private String profilePictureName;
     private ContactInfoDto contactInfoDto;
     private Long userId;
 }

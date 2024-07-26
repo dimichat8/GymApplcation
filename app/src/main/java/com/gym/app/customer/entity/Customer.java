@@ -28,6 +28,8 @@ public class Customer {
     @Lob
     @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
     private byte[] profilePicture;
+    @Column(name = "profile_picture_name")
+    private String profilePictureName;
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private ContactInfo contactInfo;
     @ManyToOne

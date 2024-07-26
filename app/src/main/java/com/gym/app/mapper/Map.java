@@ -41,6 +41,8 @@ public class Map {
         customerDto.setGender(customer.getGender());
         customerDto.setAge(customer.getAge());
         customerDto.setIsEnabled(customer.getIsEnabled());
+        customerDto.setProfilePictureName(customer.getProfilePictureName());
+        customerDto.setProfilePicture(customer.getProfilePicture());
         if (customer.getContactInfo() != null) {
             ContactInfoDto contactInfoDto = new ContactInfoDto();
             contactInfoDto.setId(customer.getContactInfo().getId());

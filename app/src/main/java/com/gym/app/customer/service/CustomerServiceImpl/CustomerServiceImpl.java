@@ -119,20 +119,46 @@ public class CustomerServiceImpl implements CustomerService {
         Optional<Customer> customerOptional = customerRepository.findById(customerId);
         if (customerOptional.isPresent()) {
             Customer customer = customerOptional.get();
+
+            String contentType = profilePicture.getContentType();
+            String extension = "";
+            if (contentType != null) {
+                switch (contentType) {
+                    case "image/jpeg":
+                        extension = "jpeg";
+                        break;
+                    case "image/png":
+                        extension = "png";
+                        break;
+                    case "image/gif":
+                        extension = "gif";
+                        break;
+                    // Add more cases if needed
+                    default:
+                        throw new IllegalArgumentException("Unsupported file type: " + contentType);
+                }
+            }
+
+            // Construct file name and path
+            String fileName = customer.getFirstname() + "_" + customer.getAge() + "_" + customer.getSurname() + "." + extension;
+            String filePath = Paths.get(destDir, fileName).toString();
+
+            // Save the file
+            File dest = new File(filePath);
             try {
-                String fileName = customerOptional.get().getFirstname() + "_" + customerOptional.get().getAge() + "_" + customerOptional.get().getSurname() + ".jpeg";
-                String filePath = Paths.get(destDir, fileName).toString();
-                String nameOfPicture = Paths.get(fileName).toString();
-                File dest = new File(filePath);
                 profilePicture.transferTo(dest);
 
-
-                customer.setProfilePicture(nameOfPicture.getBytes());
+                // Update the customer's profile picture path in the database
+                customer.setProfilePicture(fileName.getBytes());
+                customer.setProfilePictureName(fileName);
                 customerRepository.save(customer);
-                System.out.println(customer);
+                System.out.println("Profile picture uploaded successfully: " + customer);
             } catch (IOException e) {
                 e.printStackTrace();
+                throw new RuntimeException("Failed to upload file: " + e.getMessage());
             }
+        } else {
+            throw new IllegalArgumentException("Customer not found with id: " + customerId);
         }
     }
 
