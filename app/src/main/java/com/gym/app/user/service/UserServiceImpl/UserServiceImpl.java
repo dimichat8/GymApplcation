@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(UserDto userDto) {
         User user = new User();
-        user.setName(userDto.getName());
+         user.setUserName(userDto.getUserName());
         user.setPassword(/*passwordEncoder.encode(*/userDto.getPassword());
         user.setIsLoggedIn(userDto.getIsLoggedIn());
         user.setRole(userDto.getRole());
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> existingUserOpt = userRepository.findById(id);
         if (existingUserOpt.isPresent()) {
             User user = existingUserOpt.get();
-            user.setName(userDto.getName());
+            user.setUserName(userDto.getUserName());
             user.setPassword(userDto.getPassword());
             user.setIsLoggedIn(userDto.getIsLoggedIn());
             user.setRole(userDto.getRole());

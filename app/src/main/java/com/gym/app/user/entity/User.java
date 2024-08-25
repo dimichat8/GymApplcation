@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.enabled;
@@ -22,7 +21,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String userName;
     private String password;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private ContactInfo contactInfo;
@@ -36,7 +35,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + userName + '\'' +
                 ", enabled=" + enabled +
                 ", role='" + role + '\'' +
                 '}';

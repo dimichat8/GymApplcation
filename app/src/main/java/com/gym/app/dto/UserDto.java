@@ -1,6 +1,5 @@
 package com.gym.app.dto;
 
-import com.gym.app.customer.entity.Customer;
 import com.gym.app.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +14,7 @@ import java.util.List;
 public class UserDto {
 
     private Long id;
-    private String name;
+    private String userName;
     private String password;
     private ContactInfoDto contactInfoDto;
     private Boolean isLoggedIn;

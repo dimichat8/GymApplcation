@@ -2,17 +2,14 @@ package com.gym.app.mapper;
 
 import com.gym.app.contactInfo.entity.ContactInfo;
 import com.gym.app.customer.entity.Customer;
-import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.dto.ContactInfoDto;
 import com.gym.app.dto.CustomerDto;
 import com.gym.app.dto.UserDto;
 import com.gym.app.dto.WorkoutDto;
 import com.gym.app.user.entity.User;
 import com.gym.app.workout.entity.Workout;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Map {
@@ -90,7 +87,7 @@ public class Map {
 
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
-        userDto.setName(user.getName());
+        userDto.setUserName(user.getUserName());
         userDto.setPassword(user.getPassword());
         userDto.setIsLoggedIn(user.getIsLoggedIn());
         userDto.setRole(user.getRole());
@@ -102,7 +99,7 @@ public class Map {
             contactInfoDto.setMobilePhone(user.getContactInfo().getMobilePhone());
             contactInfoDto.setUserId(user.getId());
             if (!user.getCustomerList().isEmpty()) {
-                Customer customer = user.getCustomerList().get(0); // Assuming you want the first customer
+                Customer customer = user.getCustomerList().get(0);
                 contactInfoDto.setCustomerId(customer.getId());
             }
             userDto.setContactInfoDto(contactInfoDto);
@@ -122,7 +119,7 @@ public class Map {
         }
         User user = new User();
         user.setId(userDto.getId());
-        user.setName(userDto.getName());
+        user.setUserName(userDto.getUserName());
         user.setPassword(userDto.getPassword());
         user.setIsLoggedIn(userDto.getIsLoggedIn());
         user.setRole(userDto.getRole());
