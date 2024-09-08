@@ -2,7 +2,10 @@ package com.gym.app.user.controller;
 
 import com.gym.app.dto.AllDto;
 import com.gym.app.dto.UserDto;
+import com.gym.app.dto.UsernameDto;
+import com.gym.app.mapper.Map;
 import com.gym.app.user.entity.User;
+import com.gym.app.user.repository.UserRepository;
 import com.gym.app.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/getUsers")
     public ResponseEntity<List<UserDto>> getUsers() {
@@ -33,8 +38,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserDto userDto) {
-        userService.registerUser(userDto);
-        return ResponseEntity.ok("User registered successfully!");
+        return userService.registerUser(userDto);
     }
 
     @PutMapping("/update/{id}")
@@ -53,5 +57,11 @@ public class UserController {
     public ResponseEntity<AllDto> getAllActivities() {
         AllDto allDto = userService.all();
         return ResponseEntity.ok(allDto);
+    }
+
+    @GetMapping("/get/byEmail")
+    public ResponseEntity<String> getUserByEmail(@RequestBody UsernameDto usernameDto) {
+        String username = userService.getUserByEmail(usernameDto.getUsername());
+        return ResponseEntity.ok(username);
     }
 }

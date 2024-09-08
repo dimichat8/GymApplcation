@@ -10,13 +10,20 @@ import com.gym.app.user.entity.User;
 import com.gym.app.user.repository.UserRepository;
 import com.gym.app.user.service.UserService;
 import com.gym.app.workout.repository.WorkoutRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -28,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private CustomerRepository customerRepository;
     @Autowired
     private WorkoutRepository workoutRepository;
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public List<UserDto> getUsers() {
@@ -41,14 +49,22 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id)
                 .map(Map::convertToUserDto);
     }
-
+    @Transactional
     @Override
-    public void registerUser(UserDto userDto) {
+    public ResponseEntity<String> registerUser(UserDto userDto) {
+        String email = userDto.getContactInfoDto().getEmail();
+        Optional<User> existingUser = Optional.ofNullable(userRepository.findUserByEmail(email));
+        if (existingUser.isPresent()) {
+            log.warn("User with email {} already exists", email);
+            return ResponseEntity.ok("User is existed!");
+        }
         User user = new User();
-         user.setUserName(userDto.getUserName());
-        user.setPassword(/*passwordEncoder.encode(*/userDto.getPassword());
+        user.setUserName(userDto.getUserName());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setIsLoggedIn(userDto.getIsLoggedIn());
         user.setRole(userDto.getRole());
+        String hashedPassword = passwordEncoder.encode(userDto.getPassword());
+        user.setPassword(hashedPassword);
         //user.setCustomerList(userDto.getCustomerList());
 
         User savedUser = userRepository.save(user);
@@ -60,6 +76,7 @@ public class UserServiceImpl implements UserService {
         user.setContactInfo(contactInfo);
         contactInfoRepository.save(contactInfo);
         userRepository.save(user);
+        return ResponseEntity.ok("User registered successfully!");
     }
 
     @Override
@@ -68,7 +85,7 @@ public class UserServiceImpl implements UserService {
         if (existingUserOpt.isPresent()) {
             User user = existingUserOpt.get();
             user.setUserName(userDto.getUserName());
-            user.setPassword(userDto.getPassword());
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             user.setIsLoggedIn(userDto.getIsLoggedIn());
             user.setRole(userDto.getRole());
 
@@ -102,6 +119,14 @@ public class UserServiceImpl implements UserService {
        allDto.setWorkouts(countWorkouts);
         System.out.println(allDto);
        return allDto;
+    }
+
+    @Override
+    public String getUserByEmail(String email) {
+        Optional<User> user = userRepository.findOptionalUserByEmail(email);
+        UserDto userDto = Map.convertToUserDto(user.get());
+        String username = userDto.getUserName();
+        return username;
     }
 
 }
