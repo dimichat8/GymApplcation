@@ -2,7 +2,6 @@ package com.gym.app.customer.repository;
 
 import com.gym.app.contactInfo.entity.ContactInfo;
 import com.gym.app.customer.entity.Customer;
-import com.gym.app.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +12,9 @@ import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
+
+    @Query("select c from Customer c where c.email = :email")
+    Customer findByEmail(@Param("email") String email);
 
     @Query("SELECT c FROM Customer c  WHERE c.firstname=:firstname and c.surname=:surname and c.age=:age")
     Customer findCustomerByName(String firstname, String surname, LocalDate age);

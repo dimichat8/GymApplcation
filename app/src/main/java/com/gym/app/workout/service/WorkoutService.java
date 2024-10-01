@@ -23,4 +23,6 @@ public interface WorkoutService {
     void deleteWorkoutByWeek(String week, Long customerId);
 
     List<WorkoutDto> workoutOfCustomer(Long id);
+
+    List<WorkoutDto> myProgramme(String firstname, String surname);
 }

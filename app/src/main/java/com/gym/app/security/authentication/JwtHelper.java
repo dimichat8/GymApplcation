@@ -1,14 +1,17 @@
 package com.gym.app.security.authentication;
 
+import com.gym.app.enums.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,12 +52,28 @@ public class JwtHelper {
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        boolean athlete = hasRole(userDetails.getAuthorities(), Role.ATHLETE);
+        if (athlete) {
+            return !isTokenExpired(token);
+        }else {
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        }
+    }
+
+    private boolean hasRole(Collection<? extends GrantedAuthority> authorities, Role role) {
+        String roleName = "ROLE_" + role.name();
+        for (GrantedAuthority authority : authorities) {
+            if (authority.getAuthority().equals(roleName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
-    public String generateToken(String userName){
+    public String generateToken(String userName, String role){
         Map<String,Object> claims=new HashMap<>();
+        claims.put("role",role);
         return createToken(claims,userName);
     }
 

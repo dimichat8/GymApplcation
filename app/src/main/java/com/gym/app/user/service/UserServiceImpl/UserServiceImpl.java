@@ -5,6 +5,7 @@ import com.gym.app.contactInfo.repository.ContactInfoRepository;
 import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.dto.AllDto;
 import com.gym.app.dto.UserDto;
+import com.gym.app.enums.Role;
 import com.gym.app.mapper.Map;
 import com.gym.app.user.entity.User;
 import com.gym.app.user.repository.UserRepository;

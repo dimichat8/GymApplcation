@@ -2,7 +2,7 @@ package com.gym.app.security.authController;
 
 import com.gym.app.dto.ForgotPasswordRequest;
 import com.gym.app.dto.UserLoginDto;
-import com.gym.app.security.authService.UserDetailsServiceImpl;
+import com.gym.app.enums.Role;
 import com.gym.app.security.authentication.JwtHelper;
 import com.gym.app.user.entity.User;
 import com.gym.app.user.repository.UserRepository;
@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,19 +30,28 @@ public class AuthController {
     @Autowired
     private JwtHelper jwtHelper;
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsService userDetailsService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginDto userLoginDto) {
+    public ResponseEntity<String> loginUser(@RequestBody UserLoginDto loginDto) {
         try {
-            Authentication authentication = authenticate(userLoginDto.getEmail(), userLoginDto.getPassword());
+            Authentication authentication = authenticate(loginDto.getEmail(), loginDto.getPassword());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            String token = jwtHelper.generateToken(userLoginDto.getEmail());
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String role;
+
+            if (userDetails.getAuthorities() != null) {
+                role = userDetails.getAuthorities().toString();
+            } else {
+                role = Role.ATHLETE.toString();
+            }
+
+            String token = jwtHelper.generateToken(loginDto.getEmail(), role);
             return ResponseEntity.ok(token);
         } catch (BadCredentialsException e) {
             return ResponseEntity.badRequest().body("Invalid credentials");
@@ -80,7 +90,7 @@ public class AuthController {
 
             if (matchesEmail && matchesPhone) {
                 user.setPassword(passwordEncoder.encode(forgotPasswordRequest.getPassword()));
-                userRepository.save(user); // Ensure changes are saved
+                userRepository.save(user);
                 log.info("The password is: {}", forgotPasswordRequest.getPassword());
             } else {
                 return ResponseEntity.badRequest().body("Email or phone number does not match");

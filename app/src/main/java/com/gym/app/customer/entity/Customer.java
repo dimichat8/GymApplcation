@@ -1,13 +1,17 @@
 package com.gym.app.customer.entity;
 
 import com.gym.app.contactInfo.entity.ContactInfo;
+import com.gym.app.enums.Role;
 import com.gym.app.user.entity.User;
 import com.gym.app.workout.entity.Workout;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -15,7 +19,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
+public class Customer implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +29,9 @@ public class Customer {
     private String gender;
     private Integer age;
     private Boolean isEnabled;
+    private String email; //delete
+    private String password;
+
     @Lob
     @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
     private byte[] profilePicture;
@@ -37,4 +44,40 @@ public class Customer {
     private User user;
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Workout> workouts;
+    private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getUsername() {
+        return "";
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+
+    public Role getRole() {
+        role = Role.ATHLETE;
+        return role;
+    }
 }

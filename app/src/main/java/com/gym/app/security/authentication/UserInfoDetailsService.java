@@ -1,5 +1,6 @@
 package com.gym.app.security.authentication;
 
+import com.gym.app.customer.entity.Customer;
 import com.gym.app.enums.Role;
 import com.gym.app.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +27,13 @@ import java.util.Set;
             name=user.getContactInfo().getEmail();
             password=user.getPassword();
             role=user.getRole();
+            this.isLoggedIn = false;
+        }
+
+        public UserInfoDetailsService(Customer customer) {
+            name=customer.getContactInfo().getEmail();
+            password=customer.getPassword();
+            role = Role.ATHLETE;
             this.isLoggedIn = false;
         }
 

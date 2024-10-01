@@ -87,7 +87,7 @@ public class Map {
 
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
-        userDto.setUserName(user.getUserName());
+        userDto.setUserName(user.getUsername());
         userDto.setPassword(user.getPassword());
         userDto.setIsLoggedIn(user.getIsLoggedIn());
         userDto.setRole(user.getRole());

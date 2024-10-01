@@ -1,5 +1,7 @@
 package com.gym.app.security.authService;
 
+import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.security.authentication.UserInfoDetailsService;
 import com.gym.app.user.entity.User;
 import com.gym.app.user.repository.UserRepository;
@@ -19,12 +21,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         try {
-            Optional<User> userInfo = Optional.ofNullable(userRepository.findUserByEmail(email));
-            return userInfo.map(UserInfoDetailsService::new)
-                    .orElseThrow(() -> new UsernameNotFoundException("Ο χρήστης " + email + " δεν βρέθηκε"));
+            Optional<User> user = Optional.ofNullable(userRepository.findUserByEmail(email));
+            Optional<Customer> customer = Optional.ofNullable(customerRepository.findByEmail(email));
+            if (user.isPresent()) {
+                return user.map(UserInfoDetailsService::new)
+                        .orElseThrow(() -> new UsernameNotFoundException("Ο χρήστης " + email + " δεν βρέθηκε"));
+            } else {
+                return customer.map(UserInfoDetailsService::new)
+                        .orElseThrow(() -> new UsernameNotFoundException("Ο αθλητής " + email + " δεν βρέθηκε"));
+            }
         } catch (UsernameNotFoundException ex) {
             log.error("An error occurred while loading user by username: {}", ex);
             throw new UsernameNotFoundException("Σφάλμα κατά τη φόρτωση του χρήστη με email: " + email);

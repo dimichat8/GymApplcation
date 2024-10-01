@@ -115,5 +115,14 @@ public class WorkoutServiceImpl implements WorkoutService {
             }
             return workoutDtos;
         }
+
+    @Override
+    public List<WorkoutDto> myProgramme(String firstname, String surname) {
+            List<WorkoutDto> workoutDtos = new ArrayList<>();
+        List<Workout> workouts = workoutRepository.myWorkouts(firstname, surname);
+        workoutDtos = workouts.stream().map(Map::covertToWorkoutDto).toList();
+
+        return workoutDtos;
+    }
 }
 

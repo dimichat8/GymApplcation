@@ -34,4 +34,7 @@ public interface WorkoutRepository extends JpaRepository<Workout, Long> {
 
     @Query("select w from Workout w where w.type =:type and w.week =:week and w.customer = :customer")
     List<Workout> findWorkoutByTypeAndWeek(String type, String week, Optional<Customer> customer);
+
+    @Query("SELECT w FROM Workout w JOIN w.customer c WHERE c.firstname = :firstname AND c.surname = :surname")
+    List<Workout> myWorkouts(@Param("firstname") String firstname, @Param("surname") String surname);
 }

@@ -7,11 +7,14 @@ import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.customer.service.CustomerService;
 import com.gym.app.dto.CustomerDto;
 import com.gym.app.mapper.Map;
+import com.gym.app.security.authentication.UserInfoDetailsService;
 import com.gym.app.user.entity.User;
 import com.gym.app.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,9 +83,18 @@ public class CustomerServiceImpl implements CustomerService {
                 contactInfo.setCustomer(savedCustomer);
             }
 
-            if (customerDto.getUserId() != null) {
-                Optional<User> user = userRepository.findById(customerDto.getUserId());
-                user.ifPresent(customer::setUser);
+        if (customerDto.getUserId() != null) {
+            Optional<User> user = userRepository.findById(customerDto.getUserId());
+            user.ifPresent(customer::setUser);
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated()) {
+                Object userDetails = authentication.getPrincipal();
+                if (userDetails != null) {
+                    Optional<User> user = userRepository.findOptionalUserByEmail(((UserInfoDetailsService) userDetails).getUsername());
+                    customer.setUser(user.get());
+                }
             }
         customerRepository.save(customer);
         return customerId;
@@ -102,7 +114,6 @@ public class CustomerServiceImpl implements CustomerService {
                     fos.write(pictureBytes);
                     fos.close();
 
-                    // Επιστροφή του ονόματος του αρχείου
                     String fileName = tempFile.getName();
                     tempFile.delete(); // Διαγραφή του προσωρινού αρχείου
                     return fileName;
