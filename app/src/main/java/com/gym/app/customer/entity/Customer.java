@@ -29,7 +29,6 @@ public class Customer implements UserDetails {
     private String gender;
     private Integer age;
     private Boolean isEnabled;
-    private String email; //delete
     private String password;
 
     @Lob

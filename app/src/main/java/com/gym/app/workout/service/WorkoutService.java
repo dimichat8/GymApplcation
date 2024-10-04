@@ -24,5 +24,7 @@ public interface WorkoutService {
 
     List<WorkoutDto> workoutOfCustomer(Long id);
 
-    List<WorkoutDto> myProgramme(String firstname, String surname);
+    List<WorkoutDto> myProgramme();
+
+    List<WorkoutDto> getWorkoutsForAthlete(String type, String week);
 }

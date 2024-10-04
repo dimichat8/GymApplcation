@@ -3,8 +3,6 @@ package com.gym.app.user.controller;
 import com.gym.app.dto.AllDto;
 import com.gym.app.dto.UserDto;
 import com.gym.app.dto.UsernameDto;
-import com.gym.app.mapper.Map;
-import com.gym.app.user.entity.User;
 import com.gym.app.user.repository.UserRepository;
 import com.gym.app.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

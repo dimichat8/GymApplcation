@@ -48,7 +48,6 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login", "/user/register", "/auth/forgotPassword").permitAll()
                         .anyRequest().authenticated()
                 )
-
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

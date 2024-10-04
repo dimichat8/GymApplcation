@@ -1,5 +1,7 @@
 package com.gym.app.security.authController;
 
+import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.dto.ForgotPasswordRequest;
 import com.gym.app.dto.UserLoginDto;
 import com.gym.app.enums.Role;
@@ -35,6 +37,8 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserLoginDto loginDto) {
@@ -78,23 +82,33 @@ public class AuthController {
 
     @PostMapping("/forgotPassword")
     private ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        boolean matchesUser = false;
+        boolean matchesCustomer = false;
+        User user = null;
+        Customer customer = null;
         try {
             Optional<User> userOptional = userRepository.findUserByEmailAndPhone(forgotPasswordRequest.getEmail(), forgotPasswordRequest.getPhone());
-            if (!userOptional.isPresent()) {
-                return ResponseEntity.badRequest().body("Invalid email or phone number");
+            Optional<Customer> customerOptional = customerRepository.findCustomerByEmailAndPhone(forgotPasswordRequest.getEmail(), forgotPasswordRequest.getPhone());
+            if (!userOptional.isPresent() && !customerOptional.isPresent()) {
+                return ResponseEntity.badRequest().body("Does not exist user!");
             }
-
-            User user = userOptional.get();
-            boolean matchesEmail = forgotPasswordRequest.getEmail().equals(user.getContactInfo().getEmail());
-            boolean matchesPhone = forgotPasswordRequest.getPhone().equals(user.getContactInfo().getMobilePhone());
-
-            if (matchesEmail && matchesPhone) {
+            if (userOptional.isPresent()) {
+                 user = userOptional.get();
+                 matchesUser = forgotPasswordRequest.getEmail().equals(user.getContactInfo().getEmail()) && forgotPasswordRequest.getPhone().equals(user.getContactInfo().getMobilePhone());
+            } else {
+                 customer = customerOptional.get();
+                 matchesCustomer = forgotPasswordRequest.getEmail().equals(customer.getContactInfo().getEmail()) && forgotPasswordRequest.getPhone().equals(customer.getContactInfo().getMobilePhone());
+            }
+            if (matchesUser) {
                 user.setPassword(passwordEncoder.encode(forgotPasswordRequest.getPassword()));
                 userRepository.save(user);
-                log.info("The password is: {}", forgotPasswordRequest.getPassword());
+            } else if (matchesCustomer) {
+                customer.setPassword(passwordEncoder.encode(forgotPasswordRequest.getPassword()));
+                customerRepository.save(customer);
             } else {
                 return ResponseEntity.badRequest().body("Email or phone number does not match");
             }
+            log.info("The new password is: {}", forgotPasswordRequest.getPassword());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");

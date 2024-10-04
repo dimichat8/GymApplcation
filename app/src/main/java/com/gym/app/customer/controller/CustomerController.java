@@ -1,10 +1,16 @@
 package com.gym.app.customer.controller;
 
 import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.customer.service.CustomerService;
 import com.gym.app.dto.CustomerDto;
+import com.gym.app.security.authentication.UserInfoDetailsService;
+import com.gym.app.workout.repository.WorkoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,9 +22,32 @@ import java.util.Optional;
 @RequestMapping("/customer")
 public class CustomerController {
 
-
+    @Autowired
+    private CustomerRepository customerRepository;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private WorkoutRepository workoutRepository;
+
+    @GetMapping("/getCustomer/by/login")
+    public ResponseEntity<Long> getCustomerByLogin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object userDetails = authentication.getPrincipal();
+            if (userDetails != null) {
+                Optional<Customer> customer = Optional.ofNullable(customerRepository.findOptionalCustomerByEmail(((UserInfoDetailsService) userDetails).getUsername())
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found")));;
+                if (customer.isPresent()) {
+                    Long customerId = customer.get().getId();
+                    return ResponseEntity.ok(customerId);
+
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+            }
+        }
+        return null;
+    }
 
     @GetMapping("/getCustomers")
     public ResponseEntity<List<CustomerDto>> getCustomers() {

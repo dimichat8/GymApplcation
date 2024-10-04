@@ -4,10 +4,16 @@ import com.gym.app.customer.entity.Customer;
 import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.dto.WorkoutDto;
 import com.gym.app.mapper.Map;
+import com.gym.app.security.authentication.UserInfoDetailsService;
+import com.gym.app.user.repository.UserRepository;
 import com.gym.app.workout.entity.Workout;
 import com.gym.app.workout.repository.WorkoutRepository;
 import com.gym.app.workout.service.WorkoutService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +28,8 @@ public class WorkoutServiceImpl implements WorkoutService {
         private WorkoutRepository workoutRepository;
         @Autowired
         private CustomerRepository customerRepository;
+        @Autowired
+        private UserRepository userRepository;
 
         @Override
         public List<WorkoutDto> getAllWorkouts() {
@@ -116,13 +124,48 @@ public class WorkoutServiceImpl implements WorkoutService {
             return workoutDtos;
         }
 
+    @Transactional
     @Override
-    public List<WorkoutDto> myProgramme(String firstname, String surname) {
-            List<WorkoutDto> workoutDtos = new ArrayList<>();
-        List<Workout> workouts = workoutRepository.myWorkouts(firstname, surname);
-        workoutDtos = workouts.stream().map(Map::covertToWorkoutDto).toList();
+    public List<WorkoutDto> myProgramme() {
+        List<WorkoutDto> workoutDtos;
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated()) {
+                Object userDetails = authentication.getPrincipal();
+                if (userDetails != null) {
+                    Optional<Customer> customer = Optional.ofNullable(customerRepository.findOptionalCustomerByEmail(((UserInfoDetailsService) userDetails).getUsername())
+                            .orElseThrow(() -> new UsernameNotFoundException("User not found")));;
+                    if (customer.isPresent()) {
+                        List<Workout> workouts = workoutRepository.myWorkouts(customer.get().getFirstname(), customer.get().getSurname());
+                        workoutDtos = workouts.stream().map(Map::covertToWorkoutDto).toList();
+                        return workoutDtos;
+                    }
+                }
+            }
 
-        return workoutDtos;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+    @Transactional
+    @Override
+    public List<WorkoutDto> getWorkoutsForAthlete(String type, String week) {
+            List<WorkoutDto> workoutDtos;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object userDetails = authentication.getPrincipal();
+            if (userDetails != null) {
+                Optional<Customer> customer = Optional.ofNullable(customerRepository.findOptionalCustomerByEmail(((UserInfoDetailsService) userDetails).getUsername())
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found")));;
+                if (customer.isPresent()) {
+                    List<Workout> workouts = workoutRepository.myWorkouts(customer.get().getFirstname(), customer.get().getSurname());
+                    workoutDtos = workouts.stream().map(Map::covertToWorkoutDto).toList();
+                    return workoutDtos;
+                }
+            }
+        }
+        return List.of();
     }
 }
 

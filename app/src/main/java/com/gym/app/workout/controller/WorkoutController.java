@@ -1,6 +1,5 @@
 package com.gym.app.workout.controller;
 
-import com.gym.app.customer.entity.Customer;
 import com.gym.app.customer.service.CustomerService;
 import com.gym.app.dto.WorkoutDto;
 import com.gym.app.workout.entity.Workout;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS })
 @RestController
@@ -94,13 +92,20 @@ public class WorkoutController {
     }
 
     @GetMapping("/myProgramme")
-    public ResponseEntity<List<WorkoutDto>> getCustomerProgramme(@RequestParam String firstname, @RequestParam String surname) {
-        Optional<Customer> customer = customerService.getCustomer(firstname, surname);
-        List<WorkoutDto> workoutDtos = workoutService.myProgramme(firstname, surname);
-        if (customer.isPresent()) {
+    public ResponseEntity<List<WorkoutDto>> getCustomerProgramme() {
+        List<WorkoutDto> workoutDtos = workoutService.myProgramme();
+        if (workoutDtos == null || !workoutDtos.isEmpty()) {
             return ResponseEntity.ok(workoutDtos);
         }else {
             return ResponseEntity.notFound().build();
         }
     }
+
+
+    @GetMapping("/get/for/athlete")
+    public List<WorkoutDto> getWorkoutsForAthelete(@RequestParam String type, @RequestParam String week) {
+        return workoutService.getWorkoutsForAthlete(type, week);
+    }
+
+
 }

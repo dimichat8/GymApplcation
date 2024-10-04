@@ -11,6 +11,7 @@ import com.gym.app.user.entity.User;
 import com.gym.app.user.repository.UserRepository;
 import com.gym.app.user.service.UserService;
 import com.gym.app.workout.repository.WorkoutRepository;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,24 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private WorkoutRepository workoutRepository;
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @PostConstruct
+    public void init() {
+        if (userRepository.count() == 0) {
+            User user = new User();
+                user.setUserName("ADMIN");
+                user.setPassword(passwordEncoder.encode("admin"));
+                user.setRole(Role.ADMIN);
+            userRepository.save(user);
+            ContactInfo contactInfo = new ContactInfo();
+                contactInfo.setPhone("6975885452");
+                contactInfo.setEmail("admin@gmail.com");
+                contactInfo.setUser(user);
+                user.setContactInfo(contactInfo);
+            contactInfoRepository.save(contactInfo);
+            log.info("Create admin user");
+        }
+    }
 
     @Override
     public List<UserDto> getUsers() {
