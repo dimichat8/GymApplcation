@@ -1,4 +1,3 @@
-/*
 package com.gym.app.security.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -50,4 +49,4 @@ public class EmailConfig {
         message.setText("FATAL - Application crash. Save your job!!");
         return message;
     }
-}*/
+}

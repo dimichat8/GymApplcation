@@ -20,9 +20,9 @@ import java.util.function.Function;
 @Component
 public class JwtHelper {
 
-
     public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
-
+    private static final long ALLOWED_CLOCK_SKEW = 5 * 60 * 1000; // 5 minutes
+    private static final long TOKEN_EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -47,7 +47,8 @@ public class JwtHelper {
     }
 
     private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        Date expirationDate = extractExpiration(token);
+        return expirationDate.before(new Date(System.currentTimeMillis() - ALLOWED_CLOCK_SKEW));
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
@@ -55,7 +56,7 @@ public class JwtHelper {
         boolean athlete = hasRole(userDetails.getAuthorities(), Role.ATHLETE);
         if (athlete) {
             return !isTokenExpired(token);
-        }else {
+        } else {
             return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
         }
     }
@@ -70,11 +71,10 @@ public class JwtHelper {
         return false;
     }
 
-
-    public String generateToken(String userName, String role){
-        Map<String,Object> claims=new HashMap<>();
-        claims.put("role",role);
-        return createToken(claims,userName);
+    public String generateToken(String userName, String role) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+        return createToken(claims, userName);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
@@ -82,12 +82,13 @@ public class JwtHelper {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*30))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION_TIME)) // 1 hour expiration
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     private Key getSignKey() {
-        byte[] keyBytes= Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,6 +48,8 @@ public class CustomerServiceImpl implements CustomerService {
     private UserRepository userRepository;
 
     Logger logger = Logger.getLogger(this.getClass().getName());
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<CustomerDto> getCustomers() {
@@ -65,6 +68,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setId(customerDto.getId());
             customer.setFirstname(customerDto.getFirstname());
             customer.setSurname(customerDto.getSurname());
+            customer.setPassword(passwordEncoder.encode(customerDto.getPassword()));
             customer.setGender(customerDto.getGender());
             if (customerDto.getIsEnabled() == null) {
                 customerDto.setIsEnabled(true);
@@ -160,7 +164,6 @@ public class CustomerServiceImpl implements CustomerService {
             try {
                 profilePicture.transferTo(dest);
 
-                // Update the customer's profile picture path in the database
                 customer.setProfilePicture(fileName.getBytes());
                 customer.setProfilePictureName(fileName);
                 customerRepository.save(customer);
