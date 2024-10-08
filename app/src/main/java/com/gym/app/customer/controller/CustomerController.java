@@ -4,7 +4,10 @@ import com.gym.app.customer.entity.Customer;
 import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.customer.service.CustomerService;
 import com.gym.app.dto.CustomerDto;
+import com.gym.app.enums.Role;
 import com.gym.app.security.authentication.UserInfoDetailsService;
+import com.gym.app.user.entity.User;
+import com.gym.app.user.repository.UserRepository;
 import com.gym.app.workout.repository.WorkoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,20 +32,35 @@ public class CustomerController {
     private CustomerService customerService;
     @Autowired
     private WorkoutRepository workoutRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/getCustomer/by/login")
     public ResponseEntity<Long> getCustomerByLogin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             Object userDetails = authentication.getPrincipal();
+            Object authority = authentication.getAuthorities();
             if (userDetails != null) {
-                Optional<Customer> customer = Optional.ofNullable(customerRepository.findOptionalCustomerByEmail(((UserInfoDetailsService) userDetails).getUsername())
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found")));;
-                if (customer.isPresent()) {
-                    Long customerId = customer.get().getId();
-                    return ResponseEntity.ok(customerId);
-
+                String email = ((UserInfoDetailsService) userDetails).getUsername();
+                Optional<User> user = Optional.empty();
+                Optional<Customer> customer = Optional.empty();
+                List<Object> o = new ArrayList<>();
+                if (authority.equals("ROLE_" + Role.ATHLETE)) {
+                    user = Optional.of(Optional.ofNullable(userRepository.findUserByEmail(email))
+                            .orElseThrow(() -> new UsernameNotFoundException("User not found")));
+                    o.add(user);
                 } else {
+                    customer = Optional.ofNullable(customerRepository.findOptionalCustomerByEmail(email)
+                            .orElseThrow(() -> new UsernameNotFoundException("Athlete not found")));
+                    o.add(customer);
+                }
+                Object object = o.get(0);
+                if (((Optional<?>) object).get() instanceof User) {
+                    return ResponseEntity.ok(user.get().getId());
+                } else if (((Optional<?>) object).get() instanceof Customer) {
+                    return ResponseEntity.ok(customer.get().getId());
+                } else  {
                     return ResponseEntity.notFound().build();
                 }
             }

@@ -10,6 +10,7 @@ import com.gym.app.workout.entity.Workout;
 import com.gym.app.workout.repository.WorkoutRepository;
 import com.gym.app.workout.service.WorkoutService;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class WorkoutServiceImpl implements WorkoutService {
 

@@ -82,10 +82,9 @@ public class UserServiceImpl implements UserService {
         user.setUserName(userDto.getUserName());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setIsLoggedIn(userDto.getIsLoggedIn());
-        user.setRole(userDto.getRole());
+        user.setRole(Role.TRAINER);
         String hashedPassword = passwordEncoder.encode(userDto.getPassword());
         user.setPassword(hashedPassword);
-        //user.setCustomerList(userDto.getCustomerList());
 
         User savedUser = userRepository.save(user);
         ContactInfo contactInfo = new ContactInfo();
