@@ -3,7 +3,7 @@ package com.gym.app.customer.controller;
 import com.gym.app.customer.entity.Customer;
 import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.customer.service.CustomerService;
-import com.gym.app.dto.CustomerDto;
+import com.gym.app.dto.CustomerGymDto;
 import com.gym.app.enums.Role;
 import com.gym.app.security.authentication.UserInfoDetailsService;
 import com.gym.app.user.entity.User;
@@ -69,19 +69,19 @@ public class CustomerController {
     }
 
     @GetMapping("/getCustomers")
-    public ResponseEntity<List<CustomerDto>> getCustomers() {
-        List<CustomerDto> customerList = customerService.getCustomers();
+    public ResponseEntity<List<CustomerGymDto>> getCustomers() {
+        List<CustomerGymDto> customerList = customerService.getCustomers();
         return ResponseEntity.ok(customerList);
     }
 
     @GetMapping("/getCustomerById/{id}")
-    public ResponseEntity<Optional<CustomerDto>> getCustomerById(@PathVariable Long id) {
-        Optional<CustomerDto> user = customerService.getCustomerById(id);
+    public ResponseEntity<Optional<CustomerGymDto>> getCustomerById(@PathVariable Long id) {
+        Optional<CustomerGymDto> user = customerService.getCustomerById(id);
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerCustomer(@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<String> registerCustomer(@RequestBody CustomerGymDto customerDto) {
         customerService.registerCustomer(customerDto);
         return ResponseEntity.ok("Customer '" + customerDto.getSurname() + "' registered successfully!");
     }
@@ -108,7 +108,7 @@ public class CustomerController {
 
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateCustomer(@RequestBody CustomerDto customerDto, @PathVariable Long id) {
+    public ResponseEntity<String> updateCustomer(@RequestBody CustomerGymDto customerDto, @PathVariable Long id) {
         customerService.updateCustomer(customerDto, id);
         return ResponseEntity.ok("Customer updated successfully!");
     }
@@ -127,5 +127,11 @@ public class CustomerController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/getCustomerByUser")
+    public ResponseEntity<List<CustomerGymDto>> getCustomerByUser(@RequestParam String email) {
+        List<CustomerGymDto> customerDtoList = customerService.getAllCustomersByUser(email);
+        return ResponseEntity.ok(customerDtoList);
     }
 }

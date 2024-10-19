@@ -5,11 +5,12 @@ import com.gym.app.contactInfo.repository.ContactInfoRepository;
 import com.gym.app.customer.entity.Customer;
 import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.customer.service.CustomerService;
-import com.gym.app.dto.CustomerDto;
+import com.gym.app.dto.CustomerGymDto;
 import com.gym.app.mapper.Map;
 import com.gym.app.security.authentication.UserInfoDetailsService;
 import com.gym.app.user.entity.User;
 import com.gym.app.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,18 +53,18 @@ public class CustomerServiceImpl implements CustomerService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public List<CustomerDto> getCustomers() {
+    public List<CustomerGymDto> getCustomers() {
         return customerRepository.findAll().stream()
                 .map(Map::convertToCustomerDto)
                 .collect(Collectors.toList());
     }
     @Override
-    public Optional<CustomerDto> getCustomerById(Long id) {
+    public Optional<CustomerGymDto> getCustomerById(Long id) {
         return customerRepository.findById(id).map(Map::convertToCustomerDto);
     }
 
     @Override
-    public Long registerCustomer(CustomerDto customerDto) {
+    public Long registerCustomer(CustomerGymDto customerDto) {
         Customer customer = new Customer();
             customer.setId(customerDto.getId());
             customer.setFirstname(customerDto.getFirstname());
@@ -113,14 +114,13 @@ public class CustomerServiceImpl implements CustomerService {
             byte[] pictureBytes = customerOptional.get().getProfilePicture();
             if (pictureBytes != null && pictureBytes.length > 0) {
                 try {
-                    // Δημιουργία προσωρινού αρχείου για να αποκτήσετε το όνομα του αρχείου
                     File tempFile = File.createTempFile(customerOptional.get().getFirstname() + "_" + customerOptional.get().getFirstname(), ".jpg");
                     FileOutputStream fos = new FileOutputStream(tempFile);
                     fos.write(pictureBytes);
                     fos.close();
 
                     String fileName = tempFile.getName();
-                    tempFile.delete(); // Διαγραφή του προσωρινού αρχείου
+                    tempFile.delete();
                     return fileName;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -149,7 +149,6 @@ public class CustomerServiceImpl implements CustomerService {
                     case "image/gif":
                         extension = "gif";
                         break;
-                    // Add more cases if needed
                     default:
                         throw new IllegalArgumentException("Unsupported file type: " + contentType);
                 }
@@ -178,7 +177,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void updateCustomer(CustomerDto customerDto, Long id) {
+    public void updateCustomer(CustomerGymDto customerDto, Long id) {
         Optional<Customer> existingCustomerOpt = customerRepository.findById(id);
         if (existingCustomerOpt.isPresent()) {
             Customer customer = existingCustomerOpt.get();
@@ -214,5 +213,14 @@ public class CustomerServiceImpl implements CustomerService {
             logger.info("Customer name is: " + customer.get().getFirstname() + " " + customer.get().getSurname());
         }
         return customerRepository.findCustomerByFirstnameAndSurname(firstname, surname);
+    }
+    
+    @Transactional
+    @Override
+    public List<CustomerGymDto> getAllCustomersByUser(String email) {
+        List<CustomerGymDto> customerDtoList;
+        List<Customer> customers = customerRepository.getCustomersByUser(email);
+        customerDtoList = customers.stream().map(Map::convertToCustomerDto).collect(Collectors.toList());
+        return customerDtoList;
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,11 +23,18 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Query("select c from ContactInfo c where c.customer=:customer")
     ContactInfo findContactInfoByCustomer(Optional<Customer> customer);
 
-    @Query("select count(c) from Customer  c where c.isEnabled = true")
-    int countActiveCustomers();
+    @Query("select count(c) from Customer c join c.user u join u.contactInfo con where c.isEnabled = true and con.email = :email")
+    int countActiveCustomers(@Param("email") String email);
 
-    @Query("select count(c) from Customer  c where c.isEnabled = false")
-    int countDisabledCustomers();
+    @Query("select count(c) from Customer c join c.user u join u.contactInfo con where c.isEnabled = false and con.email = :email")
+    int countDisabledCustomers(@Param("email") String email);
+
+    @Query("select count(w.id) from Customer c" +
+            " join c.user u " +
+            " join u.contactInfo con " +
+            " left join c.workouts w " +
+            "   where con.email = :email ")
+    int countWorkouts(@Param("email") String email);
 
     @Query("select c from Customer c where c.firstname=:firstname and c.surname=:surname")
     Optional<Customer> findCustomerByFirstnameAndSurname(@Param("firstname") String firstname, @Param("surname") String surname);
@@ -36,4 +44,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query("select c from Customer c where c.contactInfo.email = :email and c.contactInfo.mobilePhone = :phone")
     Optional<Customer> findCustomerByEmailAndPhone(String email, String phone);
+
+    @Query("select c from Customer c join c.user u join u.contactInfo con where con.email = :email")
+    List<Customer> getCustomersByUser(@Param("email") String email);
 }

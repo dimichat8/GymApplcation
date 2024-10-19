@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface WorkoutRepository extends JpaRepository<Workout, Long> {
 
-    @Query("select count(w) from Workout w")
+    @Query("select  count(w) from Workout w")
     int countWorkouts();
 
     @Query("select w from Workout w where w.customer =:customer")

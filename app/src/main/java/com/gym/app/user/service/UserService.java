@@ -1,24 +1,24 @@
 package com.gym.app.user.service;
 
 import com.gym.app.dto.AllDto;
-import com.gym.app.dto.UserDto;
+import com.gym.app.dto.UserGymDto;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    List<UserDto> getUsers();
+    List<UserGymDto> getUsers();
 
-    Optional<UserDto> getUserById(Long id);
+    Optional<UserGymDto> getUserById(Long id);
 
-    ResponseEntity<String> registerUser(UserDto userDto);
+    ResponseEntity<String> registerUser(UserGymDto userDto);
 
-    void updateUser(UserDto userDto, Long id);
+    void updateUser(UserGymDto userDto, Long id);
 
     void deleteUser(Long id);
 
-    AllDto all();
+    AllDto all(String email);
 
     String getUserByEmail(String email);
 }

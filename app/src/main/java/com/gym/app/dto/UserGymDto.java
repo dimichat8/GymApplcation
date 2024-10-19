@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class UserGymDto {
 
     private Long id;
     private String userName;
@@ -18,5 +18,5 @@ public class UserDto {
     private ContactInfoDto contactInfoDto;
     private Boolean isLoggedIn;
     private Role role;
-    private List<CustomerDto> customerList;
+    private List<CustomerGymDto> customerList;
 }

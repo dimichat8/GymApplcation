@@ -1,7 +1,7 @@
 package com.gym.app.user.controller;
 
 import com.gym.app.dto.AllDto;
-import com.gym.app.dto.UserDto;
+import com.gym.app.dto.UserGymDto;
 import com.gym.app.dto.UsernameDto;
 import com.gym.app.user.repository.UserRepository;
 import com.gym.app.user.service.UserService;
@@ -23,24 +23,24 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/getUsers")
-    public ResponseEntity<List<UserDto>> getUsers() {
-        List<UserDto> userList = userService.getUsers();
+    public ResponseEntity<List<UserGymDto>> getUsers() {
+        List<UserGymDto> userList = userService.getUsers();
         return ResponseEntity.ok(userList);
     }
 
     @GetMapping("/getUserById/{id}")
-    public ResponseEntity<Optional<UserDto>> getUserById(@PathVariable Long id) {
-        Optional<UserDto> user = userService.getUserById(id);
+    public ResponseEntity<Optional<UserGymDto>> getUserById(@PathVariable Long id) {
+        Optional<UserGymDto> user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<String> registerUser(@RequestBody UserGymDto userDto) {
         return userService.registerUser(userDto);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateUser(@RequestBody UserDto userDto, @PathVariable Long id) {
+    public ResponseEntity<String> updateUser(@RequestBody UserGymDto userDto, @PathVariable Long id) {
         userService.updateUser(userDto, id);
         return ResponseEntity.ok("User updated successfully!");
     }
@@ -52,8 +52,8 @@ public class UserController {
     }
 
     @GetMapping("/getAllActivities")
-    public ResponseEntity<AllDto> getAllActivities() {
-        AllDto allDto = userService.all();
+    public ResponseEntity<AllDto> getAllActivities(@RequestParam String email) {
+        AllDto allDto = userService.all(email);
         return ResponseEntity.ok(allDto);
     }
 

@@ -3,8 +3,8 @@ package com.gym.app.mapper;
 import com.gym.app.contactInfo.entity.ContactInfo;
 import com.gym.app.customer.entity.Customer;
 import com.gym.app.dto.ContactInfoDto;
-import com.gym.app.dto.CustomerDto;
-import com.gym.app.dto.UserDto;
+import com.gym.app.dto.CustomerGymDto;
+import com.gym.app.dto.UserGymDto;
 import com.gym.app.dto.WorkoutDto;
 import com.gym.app.user.entity.User;
 import com.gym.app.workout.entity.Workout;
@@ -27,11 +27,11 @@ public class Map {
                 .collect(Collectors.toList());
     }
 
-    public static CustomerDto convertToCustomerDto(Customer customer) {
+    public static CustomerGymDto convertToCustomerDto(Customer customer) {
         if (customer == null) {
             return null;
         }
-        CustomerDto customerDto = new CustomerDto();
+        CustomerGymDto customerDto = new CustomerGymDto();
         customerDto.setId(customer.getId());
         customerDto.setFirstname(customer.getFirstname());
         customerDto.setSurname(customer.getSurname());
@@ -80,12 +80,12 @@ public class Map {
         return customer;
     }*/
 
-    public static UserDto convertToUserDto(User user) {
+    public static UserGymDto convertToUserDto(User user) {
         if (user == null) {
             return null;
         }
 
-        UserDto userDto = new UserDto();
+        UserGymDto userDto = new UserGymDto();
         userDto.setId(user.getId());
         userDto.setUserName(user.getUsername());
         userDto.setPassword(user.getPassword());
@@ -113,7 +113,7 @@ public class Map {
         return userDto;
     }
 
-    public static User convertToUser(UserDto userDto) {
+    public static User convertToUser(UserGymDto userDto) {
         if (userDto == null) {
             return null;
         }
