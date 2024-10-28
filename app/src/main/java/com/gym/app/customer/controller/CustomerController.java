@@ -1,6 +1,6 @@
 package com.gym.app.customer.controller;
 
-import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.entity.GymCustomer;
 import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.customer.service.CustomerService;
 import com.gym.app.dto.CustomerGymDto;
@@ -44,7 +44,7 @@ public class CustomerController {
             if (userDetails != null) {
                 String email = ((UserInfoDetailsService) userDetails).getUsername();
                 Optional<User> user = Optional.empty();
-                Optional<Customer> customer = Optional.empty();
+                Optional<GymCustomer> customer = Optional.empty();
                 List<Object> o = new ArrayList<>();
                 if (authority.equals("ROLE_" + Role.ATHLETE)) {
                     user = Optional.of(Optional.ofNullable(userRepository.findUserByEmail(email))
@@ -58,7 +58,7 @@ public class CustomerController {
                 Object object = o.get(0);
                 if (((Optional<?>) object).get() instanceof User) {
                     return ResponseEntity.ok(user.get().getId());
-                } else if (((Optional<?>) object).get() instanceof Customer) {
+                } else if (((Optional<?>) object).get() instanceof GymCustomer) {
                     return ResponseEntity.ok(customer.get().getId());
                 } else  {
                     return ResponseEntity.notFound().build();
@@ -121,7 +121,7 @@ public class CustomerController {
 
     @GetMapping("get/name")
     public ResponseEntity<String> getCustomerName(@RequestParam String firstname, @RequestParam String surname) {
-        Optional<Customer> customer = customerService.getCustomer(firstname, surname);
+        Optional<GymCustomer> customer = customerService.getCustomer(firstname, surname);
         if (customer.isPresent()) {
             return ResponseEntity.ok("Customer name is: " + customer.get().getFirstname() + " " + customer.get().getSurname());
         } else {

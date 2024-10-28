@@ -2,7 +2,7 @@ package com.gym.app.customer.service.CustomerServiceImpl;
 
 import com.gym.app.contactInfo.entity.ContactInfo;
 import com.gym.app.contactInfo.repository.ContactInfoRepository;
-import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.entity.GymCustomer;
 import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.customer.service.CustomerService;
 import com.gym.app.dto.CustomerGymDto;
@@ -65,7 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Long registerCustomer(CustomerGymDto customerDto) {
-        Customer customer = new Customer();
+        GymCustomer customer = new GymCustomer();
             customer.setId(customerDto.getId());
             customer.setFirstname(customerDto.getFirstname());
             customer.setSurname(customerDto.getSurname());
@@ -77,7 +77,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setIsEnabled(customerDto.getIsEnabled());
             customer.setAge(customerDto.getAge());
 
-            Customer savedCustomer = customerRepository.save(customer);
+            GymCustomer savedCustomer = customerRepository.save(customer);
             Long customerId = savedCustomer.getId();
             System.out.println(customerId);
             ContactInfo contactInfo = new ContactInfo();
@@ -108,7 +108,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public String getPicture(Long id) {
-        Optional<Customer> customerOptional = customerRepository.findById(id);
+        Optional<GymCustomer> customerOptional = customerRepository.findById(id);
 
         if (customerOptional.isPresent()) {
             byte[] pictureBytes = customerOptional.get().getProfilePicture();
@@ -132,9 +132,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void uploadProfilePicture(Long customerId, MultipartFile profilePicture) {
-        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        Optional<GymCustomer> customerOptional = customerRepository.findById(customerId);
         if (customerOptional.isPresent()) {
-            Customer customer = customerOptional.get();
+            GymCustomer customer = customerOptional.get();
 
             String contentType = profilePicture.getContentType();
             String extension = "";
@@ -178,9 +178,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void updateCustomer(CustomerGymDto customerDto, Long id) {
-        Optional<Customer> existingCustomerOpt = customerRepository.findById(id);
+        Optional<GymCustomer> existingCustomerOpt = customerRepository.findById(id);
         if (existingCustomerOpt.isPresent()) {
-            Customer customer = existingCustomerOpt.get();
+            GymCustomer customer = existingCustomerOpt.get();
             customer.setFirstname(customerDto.getFirstname());
             customer.setSurname(customerDto.getSurname());
             customer.setIsEnabled(customerDto.getIsEnabled());
@@ -202,13 +202,13 @@ public class CustomerServiceImpl implements CustomerService {
 
    @Override
     public void deleteCustomer(@PathVariable Long id) {
-        Optional<Customer> customerOpt = customerRepository.findById(id);
+        Optional<GymCustomer> customerOpt = customerRepository.findById(id);
         customerOpt.ifPresent(customer -> customerRepository.delete(customer));
     }
 
     @Override
-    public Optional<Customer> getCustomer(String firstname, String surname) {
-        Optional<Customer> customer = customerRepository.findCustomerByFirstnameAndSurname(firstname, surname);
+    public Optional<GymCustomer> getCustomer(String firstname, String surname) {
+        Optional<GymCustomer> customer = customerRepository.findCustomerByFirstnameAndSurname(firstname, surname);
         if (customer.isPresent()) {
             logger.info("Customer name is: " + customer.get().getFirstname() + " " + customer.get().getSurname());
         }
@@ -219,7 +219,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<CustomerGymDto> getAllCustomersByUser(String email) {
         List<CustomerGymDto> customerDtoList;
-        List<Customer> customers = customerRepository.getCustomersByUser(email);
+        List<GymCustomer> customers = customerRepository.getCustomersByUser(email);
         customerDtoList = customers.stream().map(Map::convertToCustomerDto).collect(Collectors.toList());
         return customerDtoList;
     }

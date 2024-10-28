@@ -7,7 +7,6 @@ import com.gym.app.dto.AllDto;
 import com.gym.app.dto.UserGymDto;
 import com.gym.app.enums.Role;
 import com.gym.app.mapper.Map;
-import com.gym.app.security.authController.AuthController;
 import com.gym.app.user.entity.User;
 import com.gym.app.user.repository.UserRepository;
 import com.gym.app.user.service.UserService;
@@ -49,13 +48,13 @@ public class UserServiceImpl implements UserService {
     public void init() {
         if (userRepository.count() == 0) {
             User user = new User();
-                user.setUserName("ADMIN");
+                user.setUsername("ADMIN-GYM");
                 user.setPassword(passwordEncoder.encode("admin"));
                 user.setRole(Role.ADMIN);
             userRepository.save(user);
             ContactInfo contactInfo = new ContactInfo();
                 contactInfo.setPhone("6975885452");
-                contactInfo.setEmail("admin@gmail.com");
+                contactInfo.setEmail("admin.gym@gmail.com");
                 contactInfo.setUser(user);
                 user.setContactInfo(contactInfo);
             contactInfoRepository.save(contactInfo);
@@ -86,10 +85,10 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok("User is existed!");
         }
         User user = new User();
-        user.setUserName(userDto.getUserName());
+        user.setUsername(userDto.getUserName());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setIsLoggedIn(userDto.getIsLoggedIn());
-        user.setRole(Role.TRAINER);
+        user.setRole(Role.ATHLETE);
         String hashedPassword = passwordEncoder.encode(userDto.getPassword());
         user.setPassword(hashedPassword);
 
@@ -140,7 +139,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> existingUserOpt = userRepository.findById(id);
         if (existingUserOpt.isPresent()) {
             User user = existingUserOpt.get();
-            user.setUserName(userDto.getUserName());
+            user.setUsername(userDto.getUserName());
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             user.setIsLoggedIn(userDto.getIsLoggedIn());
             user.setRole(userDto.getRole());

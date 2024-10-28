@@ -1,13 +1,11 @@
 package com.gym.app.workout.entity;
 
-import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.entity.GymCustomer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.Date;
 
 @Entity
 @Data
@@ -27,5 +25,5 @@ public class Workout {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     @ToString.Exclude
-    private Customer customer;
+    private GymCustomer customer;
 }

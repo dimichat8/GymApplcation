@@ -1,6 +1,6 @@
 package com.gym.app.contactInfo.entity;
 
-import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.entity.GymCustomer;
 import com.gym.app.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -20,7 +20,7 @@ public class ContactInfo {
     private User user;
     @OneToOne
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private GymCustomer customer;
 
     @Override
     public String toString() {

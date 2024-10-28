@@ -1,6 +1,5 @@
 package com.gym.app.dto;
 
-import com.gym.app.customer.entity.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

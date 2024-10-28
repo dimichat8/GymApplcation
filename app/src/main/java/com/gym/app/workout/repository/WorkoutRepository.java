@@ -1,7 +1,6 @@
 package com.gym.app.workout.repository;
 
-import com.gym.app.customer.entity.Customer;
-import com.gym.app.dto.WorkoutDto;
+import com.gym.app.customer.entity.GymCustomer;
 import com.gym.app.workout.entity.Workout;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,20 +19,20 @@ public interface WorkoutRepository extends JpaRepository<Workout, Long> {
     int countWorkouts();
 
     @Query("select w from Workout w where w.customer =:customer")
-    List<Workout> findWorkoutsByCustomer(@Param("customer") Optional<Customer> customer);
+    List<Workout> findWorkoutsByCustomer(@Param("customer") Optional<GymCustomer> customer);
 
     @Transactional
     @Modifying
     @Query("delete from Workout w where w.id = :workoutId and w.customer = :customer")
-    void deleteWorkoutsByCustomer(@Param("workoutId") Long workoutId, @Param("customer") Customer customer);
+    void deleteWorkoutsByCustomer(@Param("workoutId") Long workoutId, @Param("customer") GymCustomer customer);
 
     @Transactional
     @Modifying
     @Query("delete from Workout w where w.customer = :customer and w.week = :week")
-    void deleteWorkoutsByWeek(String week, @Param("customer") Customer customer);
+    void deleteWorkoutsByWeek(String week, @Param("customer") GymCustomer customer);
 
     @Query("select w from Workout w where w.type =:type and w.week =:week and w.customer = :customer")
-    List<Workout> findWorkoutByTypeAndWeek(String type, String week, Optional<Customer> customer);
+    List<Workout> findWorkoutByTypeAndWeek(String type, String week, Optional<GymCustomer> customer);
 
     @Query("SELECT w FROM Workout w JOIN w.customer c WHERE c.firstname = :firstname AND c.surname = :surname")
     List<Workout> myWorkouts(@Param("firstname") String firstname, @Param("surname") String surname);

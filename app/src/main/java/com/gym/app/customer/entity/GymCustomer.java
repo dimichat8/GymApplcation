@@ -19,7 +19,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer implements UserDetails {
+public class GymCustomer implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +29,7 @@ public class Customer implements UserDetails {
     private String gender;
     private Integer age;
     private Boolean isEnabled;
+    private String email;
     private String password;
 
     @Lob

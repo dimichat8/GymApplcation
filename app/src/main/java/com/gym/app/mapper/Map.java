@@ -1,7 +1,7 @@
 package com.gym.app.mapper;
 
 import com.gym.app.contactInfo.entity.ContactInfo;
-import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.entity.GymCustomer;
 import com.gym.app.dto.ContactInfoDto;
 import com.gym.app.dto.CustomerGymDto;
 import com.gym.app.dto.UserGymDto;
@@ -27,7 +27,7 @@ public class Map {
                 .collect(Collectors.toList());
     }
 
-    public static CustomerGymDto convertToCustomerDto(Customer customer) {
+    public static CustomerGymDto convertToCustomerDto(GymCustomer customer) {
         if (customer == null) {
             return null;
         }
@@ -99,7 +99,7 @@ public class Map {
             contactInfoDto.setMobilePhone(user.getContactInfo().getMobilePhone());
             contactInfoDto.setUserId(user.getId());
             if (!user.getCustomerList().isEmpty()) {
-                Customer customer = user.getCustomerList().get(0);
+                GymCustomer customer = user.getCustomerList().get(0);
                 contactInfoDto.setCustomerId(customer.getId());
             }
             userDto.setContactInfoDto(contactInfoDto);
@@ -119,7 +119,7 @@ public class Map {
         }
         User user = new User();
         user.setId(userDto.getId());
-        user.setUserName(userDto.getUserName());
+        user.setUsername(userDto.getUserName());
         user.setPassword(userDto.getPassword());
         user.setIsLoggedIn(userDto.getIsLoggedIn());
         user.setRole(userDto.getRole());

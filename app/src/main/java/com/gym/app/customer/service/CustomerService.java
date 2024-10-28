@@ -1,6 +1,6 @@
 package com.gym.app.customer.service;
 
-import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.entity.GymCustomer;
 import com.gym.app.dto.CustomerGymDto;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +24,7 @@ public interface CustomerService {
 
     void deleteCustomer(@PathVariable Long id);
 
-    Optional<Customer> getCustomer(String firstname, String surname);
+    Optional<GymCustomer> getCustomer(String firstname, String surname);
 
     List<CustomerGymDto> getAllCustomersByUser(String email);
 }

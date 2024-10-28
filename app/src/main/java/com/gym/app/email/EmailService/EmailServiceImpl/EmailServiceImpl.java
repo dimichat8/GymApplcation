@@ -7,7 +7,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.entity.GymCustomer;
 import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.dto.EmailDto;
 import com.gym.app.email.EmailService.EmailService;
@@ -59,8 +59,8 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public ResponseEntity<EmailDto> sendEmail(EmailDto emailDto) {
         try {
-            Optional<Customer> customer = customerRepository.findOptionalCustomerByEmail(emailDto.getEmail());
-            Customer customerEntity = null;
+            Optional<GymCustomer> customer = customerRepository.findOptionalCustomerByEmail(emailDto.getEmail());
+            GymCustomer customerEntity = null;
             String fileName = "";
             if (customer.isPresent()) {
                 customerEntity = customer.get();

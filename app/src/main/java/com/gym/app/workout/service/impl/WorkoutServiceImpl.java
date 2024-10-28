@@ -1,6 +1,6 @@
 package com.gym.app.workout.service.impl;
 
-import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.entity.GymCustomer;
 import com.gym.app.customer.repository.CustomerRepository;
 import com.gym.app.dto.WorkoutDto;
 import com.gym.app.mapper.Map;
@@ -47,7 +47,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
         @Override
         public List<WorkoutDto> getWorkoutsByTypeAndWeek(String type, String week, Long customerId) {
-            Optional<Customer> customer = customerRepository.findById(customerId);
+            Optional<GymCustomer> customer = customerRepository.findById(customerId);
             List<WorkoutDto> workoutDtos = new ArrayList<>();
             if (customer.isPresent()) {
                 List<Workout> workoutList = workoutRepository.findWorkoutByTypeAndWeek(type, week, customer);
@@ -58,8 +58,8 @@ public class WorkoutServiceImpl implements WorkoutService {
 
         @Override
         public void saveWorkoutWithCustomer(List<WorkoutDto> workoutsDto, Long id) {
-            Optional<Customer> optCustomer = customerRepository.findById(id);
-            Customer customer;
+            Optional<GymCustomer> optCustomer = customerRepository.findById(id);
+            GymCustomer customer;
             if (optCustomer.isPresent()) {
                 customer = optCustomer.get();
                 customerRepository.save(customer);
@@ -79,7 +79,7 @@ public class WorkoutServiceImpl implements WorkoutService {
             workout.setDuration(workoutDto.getDuration());
             workout.setWeek(workoutDto.getWeek());
             if (workoutDto.getCustomerId() != null) {
-                Optional<Customer> optionalWorkout = customerRepository.findById(workoutDto.getCustomerId());
+                Optional<GymCustomer> optionalWorkout = customerRepository.findById(workoutDto.getCustomerId());
                 workout.setCustomer(optionalWorkout.get());
             }
             return workoutRepository.save(workout);
@@ -92,7 +92,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public void deleteWorkoutCustomer(Long workoutId, Long customerId) {
-        Optional<Customer> customer = customerRepository.findById(customerId);
+        Optional<GymCustomer> customer = customerRepository.findById(customerId);
         Optional<Workout> workout = workoutRepository.findById(workoutId);
 
         if (customer.isPresent() && workout.isPresent()) {
@@ -107,7 +107,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
     @Override
     public void deleteWorkoutByWeek(String week, Long customerId) {
-        Optional<Customer> customer = customerRepository.findById(customerId);
+        Optional<GymCustomer> customer = customerRepository.findById(customerId);
         if (customer.isPresent()) {
             workoutRepository.deleteWorkoutsByWeek(week, customer.get());
         } else {
@@ -117,7 +117,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
         @Override
         public List<WorkoutDto> workoutOfCustomer(Long id) {
-            Optional<Customer> customer = customerRepository.findById(id);
+            Optional<GymCustomer> customer = customerRepository.findById(id);
             List<WorkoutDto> workoutDtos = new ArrayList<>();
             if (customer.isPresent()) {
                 List<Workout> workouts = workoutRepository.findWorkoutsByCustomer(customer);
@@ -135,7 +135,7 @@ public class WorkoutServiceImpl implements WorkoutService {
             if (authentication != null && authentication.isAuthenticated()) {
                 Object userDetails = authentication.getPrincipal();
                 if (userDetails != null) {
-                    Optional<Customer> customer = Optional.ofNullable(customerRepository.findOptionalCustomerByEmail(((UserInfoDetailsService) userDetails).getUsername())
+                    Optional<GymCustomer> customer = Optional.ofNullable(customerRepository.findOptionalCustomerByEmail(((UserInfoDetailsService) userDetails).getUsername())
                             .orElseThrow(() -> new UsernameNotFoundException("User not found")));;
                     if (customer.isPresent()) {
                         List<Workout> workouts = workoutRepository.myWorkouts(customer.get().getFirstname(), customer.get().getSurname());
@@ -158,7 +158,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         if (authentication != null && authentication.isAuthenticated()) {
             Object userDetails = authentication.getPrincipal();
             if (userDetails != null) {
-                Optional<Customer> customer = Optional.ofNullable(customerRepository.findOptionalCustomerByEmail(((UserInfoDetailsService) userDetails).getUsername())
+                Optional<GymCustomer> customer = Optional.ofNullable(customerRepository.findOptionalCustomerByEmail(((UserInfoDetailsService) userDetails).getUsername())
                         .orElseThrow(() -> new UsernameNotFoundException("User not found")));;
                 if (customer.isPresent()) {
                     List<Workout> workouts = workoutRepository.myWorkouts(customer.get().getFirstname(), customer.get().getSurname());

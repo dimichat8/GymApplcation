@@ -1,7 +1,7 @@
 package com.gym.app.user.entity;
 
 import com.gym.app.contactInfo.entity.ContactInfo;
-import com.gym.app.customer.entity.Customer;
+import com.gym.app.customer.entity.GymCustomer;
 import com.gym.app.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userName;
+    private String username;
 
     private String password;
 
@@ -38,13 +38,13 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,  orphanRemoval = true)
-    private List<Customer> customerList;
+    private List<GymCustomer> customerList;
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + userName + '\'' +
+                ", name='" + username + '\'' +
                 ", enabled=" + enabled +
                 ", role='" + role + '\'' +
                 '}';
