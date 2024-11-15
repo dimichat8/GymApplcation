@@ -162,7 +162,6 @@ public class CustomerServiceImpl implements CustomerService {
             File dest = new File(filePath);
             try {
                 profilePicture.transferTo(dest);
-
                 customer.setProfilePicture(fileName.getBytes());
                 customer.setProfilePictureName(fileName);
                 customerRepository.save(customer);

@@ -52,17 +52,14 @@ public class JwtHelper {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
 
-        // Extracting roles safely
         Set<Role> userRoles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .map(this::getRoleFromString)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        // Check if the user has required roles, using a dynamic list if necessary
         boolean isAuthenticated = hasAnyRole(userRoles, Arrays.asList(Role.ADMIN, Role.TRAINER, Role.ATHLETE));
 
-        // Final validation returning true if username matches and token is valid
         return isAuthenticated && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 

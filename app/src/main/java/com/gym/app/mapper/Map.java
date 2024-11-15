@@ -42,7 +42,7 @@ public class Map {
         customerDto.setProfilePicture(customer.getProfilePicture());
         if (customer.getContactInfo() != null) {
             ContactInfoDto contactInfoDto = new ContactInfoDto();
-            contactInfoDto.setId(customer.getContactInfo().getId());
+            contactInfoDto.setId(customer.getContactInfo().getContactInfoId());
             contactInfoDto.setPhone(customer.getContactInfo().getPhone());
             contactInfoDto.setEmail(customer.getContactInfo().getEmail());
             contactInfoDto.setMobilePhone(customer.getContactInfo().getMobilePhone());
@@ -93,7 +93,7 @@ public class Map {
         userDto.setRole(user.getRole());
         if (user.getContactInfo() != null) {
             ContactInfoDto contactInfoDto = new ContactInfoDto();
-            contactInfoDto.setId(user.getContactInfo().getId());
+            contactInfoDto.setId(user.getContactInfo().getContactInfoId());
             contactInfoDto.setPhone(user.getContactInfo().getPhone());
             contactInfoDto.setEmail(user.getContactInfo().getEmail());
             contactInfoDto.setMobilePhone(user.getContactInfo().getMobilePhone());
